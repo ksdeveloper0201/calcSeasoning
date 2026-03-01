@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Trash2, FolderOpen } from "lucide-react"
+import { BookOpen, Trash2, FolderOpen, ExternalLink } from "lucide-react"
 import type { SavedRecipe } from "@/lib/types"
 
 interface SavedRecipesProps {
@@ -51,7 +51,7 @@ export function SavedRecipes({ recipes, onLoad, onDelete }: SavedRecipesProps) {
               <div className="font-bold text-sm text-foreground truncate">
                 {recipe.name}
               </div>
-              <div className="flex items-center gap-2 mt-0.5">
+              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                 <span className="text-[10px] text-muted-foreground">
                   {recipe.ingredients.length} 調味料
                 </span>
@@ -69,6 +69,18 @@ export function SavedRecipes({ recipes, onLoad, onDelete }: SavedRecipesProps) {
                 </span>
               </div>
             </button>
+            {recipe.url && (
+              <a
+                href={recipe.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-primary/70 hover:text-primary transition-colors p-1.5 rounded-lg hover:bg-accent flex-shrink-0"
+                aria-label={`${recipe.name}の元レシピを開く`}
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
             <button
               onClick={(e) => {
                 e.stopPropagation()

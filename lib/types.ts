@@ -10,6 +10,7 @@ export interface Ingredient {
 export interface SavedRecipe {
   id: string
   name: string
+  url: string
   baseWeight: number
   targetWeight: number
   ingredients: Ingredient[]

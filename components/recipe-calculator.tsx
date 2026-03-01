@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { ChefHat, Save, FilePlus } from "lucide-react"
+import { ChefHat, Save, FilePlus, LinkIcon } from "lucide-react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import type { Ingredient, SavedRecipe } from "@/lib/types"
 import { DEFAULT_INGREDIENTS } from "@/lib/types"
@@ -11,6 +11,7 @@ import { SavedRecipes } from "./saved-recipes"
 
 export function RecipeCalculator() {
   const [recipeName, setRecipeName] = useState("")
+  const [recipeUrl, setRecipeUrl] = useState("")
   const [baseWeight, setBaseWeight] = useState(100)
   const [targetWeight, setTargetWeight] = useState(250)
   const [ingredients, setIngredients] = useState<Ingredient[]>(DEFAULT_INGREDIENTS)
@@ -74,6 +75,7 @@ export function RecipeCalculator() {
             ? {
                 ...r,
                 name: recipeName.trim(),
+                url: recipeUrl.trim(),
                 baseWeight,
                 targetWeight,
                 ingredients,
@@ -88,6 +90,7 @@ export function RecipeCalculator() {
       const newRecipe: SavedRecipe = {
         id: crypto.randomUUID(),
         name: recipeName.trim(),
+        url: recipeUrl.trim(),
         baseWeight,
         targetWeight,
         ingredients,
@@ -98,10 +101,11 @@ export function RecipeCalculator() {
       setCurrentRecipeId(newRecipe.id)
       showMessage("レシピを保存しました")
     }
-  }, [recipeName, baseWeight, targetWeight, ingredients, currentRecipeId, setSavedRecipes, showMessage])
+  }, [recipeName, recipeUrl, baseWeight, targetWeight, ingredients, currentRecipeId, setSavedRecipes, showMessage])
 
   const handleLoadRecipe = useCallback((recipe: SavedRecipe) => {
     setRecipeName(recipe.name)
+    setRecipeUrl(recipe.url || "")
     setBaseWeight(recipe.baseWeight)
     setTargetWeight(recipe.targetWeight)
     setIngredients(recipe.ingredients)
@@ -122,6 +126,7 @@ export function RecipeCalculator() {
 
   const handleNewRecipe = useCallback(() => {
     setRecipeName("")
+    setRecipeUrl("")
     setBaseWeight(100)
     setTargetWeight(250)
     setIngredients(DEFAULT_INGREDIENTS)
@@ -166,15 +171,16 @@ export function RecipeCalculator() {
             )}
           </div>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={recipeName}
-              onChange={(e) => setRecipeName(e.target.value)}
-              placeholder="例: 照り焼きチキン"
-              className="flex-1 px-3 py-2.5 bg-secondary border border-border rounded-xl focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground/40 outline-none transition-all text-sm"
-            />
-            <button
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={recipeName}
+                onChange={(e) => setRecipeName(e.target.value)}
+                placeholder="例: 照り焼きチキン"
+                className="flex-1 px-3 py-2.5 bg-secondary border border-border rounded-xl focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground/40 outline-none transition-all text-sm"
+              />
+              <button
               onClick={handleSave}
               className="flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer flex-shrink-0"
             >
@@ -191,6 +197,17 @@ export function RecipeCalculator() {
                 <span className="hidden sm:inline">新規</span>
               </button>
             )}
+            </div>
+            <div className="flex items-center gap-2">
+              <LinkIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <input
+                type="url"
+                value={recipeUrl}
+                onChange={(e) => setRecipeUrl(e.target.value)}
+                placeholder="レシピURL（任意） 例: https://cookpad.com/..."
+                className="flex-1 px-3 py-2 bg-secondary border border-border rounded-xl focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground/40 outline-none transition-all text-xs"
+              />
+            </div>
           </div>
 
           {/* Save message */}
